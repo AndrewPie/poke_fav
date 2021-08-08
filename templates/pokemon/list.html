@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% if pokemon.previous %}
+            <a href="?offset=0">&laquo; first</a>
+            <a href="?offset=">previous</a>
+        {% endif %}
+
+    <ul>
+    {% for pokemon in pokemon.results %}
+        <li>{{ pokemon.name }}</li>
+    {% endfor %}
+        {{ offset }}
+    </br>
+    {% for pok in detail %}
+        <li>{{ pok.name }}</li>
+    {% endfor %}
+    {% if pokemon.next %}
+            <a href="?offset=10">next</a>
+            <a href="?offset=">last &raquo;</a>
+        {% endif %}
+    </ul>
+{% endblock %}

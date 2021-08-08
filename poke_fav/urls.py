@@ -23,4 +23,5 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='main.html'), name='main'),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
+    path('pokemon/', include('pokemon.urls')),
 ]
