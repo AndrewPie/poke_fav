@@ -2,22 +2,28 @@
 
 {% block content %}
 {% if pokemon.previous %}
-            <a href="?offset=0">&laquo; first</a>
-            <a href="?offset=">previous</a>
+            <form action="" method="post">
+                {% csrf_token %}
+                <button type="submit" value="first" name="first">First</button> 
+                <button type="submit" value="previous" name="previous">Previous 10</button> 
+            </form>
         {% endif %}
 
     <ul>
     {% for pokemon in pokemon.results %}
         <li>{{ pokemon.name }}</li>
     {% endfor %}
-        {{ offset }}
+        <!-- {{ offset }} -->
     </br>
     {% for pok in detail %}
         <li>{{ pok.name }}</li>
     {% endfor %}
     {% if pokemon.next %}
-            <a href="?offset=10">next</a>
-            <a href="?offset=">last &raquo;</a>
+        <form action="" method="post">
+            {% csrf_token %}
+            <button type="submit" value="next" name="next">Next 10</button> 
+            <button type="submit" value="last" name="last">Last</button> 
+        </form>
         {% endif %}
     </ul>
 {% endblock %}
