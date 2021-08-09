@@ -1,12 +1,13 @@
 import requests
 from django.shortcuts import redirect, render
 from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from pokemon.models import Pokemon
 
 # from django.http import HttpResponse, HttpResponseRedirect
 # from django.urls import reverse
 
-class PokemonList(ListView):
+class PokemonList(LoginRequiredMixin, ListView):
     model = Pokemon
     template_name = "pokemon/list.html"
     

@@ -34,7 +34,7 @@ class Login(View):
             if user is not None:
                     login(request,user)
                     if redirect_url:
-                        return redirect('main')
+                        return redirect('pokemon:list')
                     else:
                         return redirect('/')
 
