@@ -1,6 +1,22 @@
 {% extends 'main.html' %}
+{% load custom_tags %}
 
 {% block content %}
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 15px;
+    }
+    table {
+        border-spacing: 5px;
+        width: 100%;
+    }
+</style>
+
+
 {% if pokemon.previous %}
             <form action="" method="post">
                 {% csrf_token %}
@@ -8,12 +24,32 @@
                 <button type="submit" value="previous" name="previous">Previous 10</button> 
             </form>
         {% endif %}
-
-    <ul>
-    {% for pokemon in pokemon.results %}
-        <li>{{ pokemon.name }}</li>
-    {% endfor %}
-    </ul>
+    <table>
+        <caption>List of Pokemon</caption>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Types</th>
+            <th>Details</th>
+        </tr>
+        {% for pokemon in pokemon.results %}
+        <tr>
+            <td>{{ detail.id|index:forloop.counter0 }}</td>
+            <td>{{ pokemon.name }}</td>
+            <td>
+                {% for type in detail.types|index:forloop.counter0 %}
+                    {% if forloop.last %}
+                        {{ type }}
+                    {% else %}
+                        {{ type }},
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td><a href="<!--to detail view-->">More details</a></td>
+        </tr>
+        {% endfor %}
+        
+    </table>
     {% if pokemon.next %}
         <form action="" method="post">
             {% csrf_token %}

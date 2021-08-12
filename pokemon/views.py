@@ -8,7 +8,7 @@ from pokemon.models import Pokemon
 # from django.http import HttpResponse, HttpResponseRedirect
 
 
-def call_poke_api(self, request, *args, **kwargs):
+def call_poke_api(self, request):
     if not 'offset' in self.request.session or not self.request.session['offset']:
             self.request.session['offset'] = 0
 
@@ -19,6 +19,25 @@ def call_poke_api(self, request, *args, **kwargs):
     response = requests.get('https://pokeapi.co/api/v2/pokemon/', params = payload)
     data = response.json()
     return data
+
+def detail_list(data):
+    urls = [el['url'] for el in data['results']]
+    poke_id = [url.split('/')[-2] for url in urls]
+    types = []
+    
+    for url in urls:
+        response = requests.get(url).json()
+        types.append([])
+        if len(response['types']) == 1:
+            types[urls.index(url)].append(response['types'][0]['type']['name'])
+        elif len(response['types']) > 1:
+            for el in range(0, len(response['types'])):
+                types[urls.index(url)].append(response['types'][el]['type']['name'])
+                
+    detail = {}
+    detail['id'] = poke_id
+    detail['types'] = types
+    return detail
 
 
 class PokemonList(LoginRequiredMixin, ListView):
@@ -33,6 +52,7 @@ class PokemonList(LoginRequiredMixin, ListView):
         self.kwargs = kwargs
         
         self.data = call_poke_api(self, request)
+        self.detail = detail_list(self.data)
         super().setup
 
     def post(self, request):
@@ -52,5 +72,6 @@ class PokemonList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pokemon'] = self.data
+        context['detail'] = self.detail
         # print(self.request.session['offset'])
         return context
