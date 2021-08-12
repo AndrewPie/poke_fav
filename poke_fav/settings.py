@@ -121,6 +121,12 @@ LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'pokemon:list'
 LOGOUT_REDIRECT_URL = "users:login"
 
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 3000
+SESSION_SAVE_EVERY_REQUEST = True   
+
+
 try:
     from poke_fav.local_settings import SECRET_KEY
 except ModuleNotFoundError:
