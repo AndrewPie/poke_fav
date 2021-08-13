@@ -5,7 +5,7 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from pokemon.models import Pokemon
 
-# from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 
 
 def call_poke_api(self, request):
@@ -16,7 +16,12 @@ def call_poke_api(self, request):
             'offset': self.request.session['offset'], 
             'limit': 10
             }
-    response = requests.get('https://pokeapi.co/api/v2/pokemon/', params = payload)
+    
+    try:
+        response = requests.get('https://pokeapi.co/api/v2/pokemon/', params = payload)
+    except requests.exceptions.RequestException as e:
+        raise Http404(e)
+
     data = response.json()
     return data
 
