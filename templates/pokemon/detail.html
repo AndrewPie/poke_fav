@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}">
+    <h1>Name: {{ pokemon.name }}</h1>
+
+    <p><strong>ID:</strong> {{ pokemon.id }}</p>
+    <p><strong>Weight:</strong> {{ pokemon.weight }}</p>
+{% endblock %}
