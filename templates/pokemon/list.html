@@ -45,7 +45,7 @@
                     {% endif %}
                 {% endfor %}
             </td>
-            <td><a href="<!--to detail view-->">More details</a></td>
+            <td><a href="{% url 'pokemon:detail' pk=detail.id|index:forloop.counter0 %}">More details</a></td>
         </tr>
         {% endfor %}
         
