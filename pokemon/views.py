@@ -30,6 +30,7 @@ def call_poke_api(self, request, p_id: int = None):
     data = response.json()
     return data
 
+
 def detail_list(data):
     urls = [el['url'] for el in data['results']]
     poke_id = [url.split('/')[-2] for url in urls]
@@ -51,11 +52,24 @@ def detail_list(data):
 
 
 def pokemon_detail(data):
-    pokemon_detail = {}
+    pokemon_detail = data
+    
     pokemon_detail['image'] = data['sprites']['front_default']
-    pokemon_detail['name'] = data['name']
-    pokemon_detail['id'] = data['id']
-    pokemon_detail['weight'] = data['weight']
+    
+    pokemon_detail['type_list'] = []
+    for el in range(0, len(data['types'])):
+        pokemon_detail['type_list'].append(data['types'][el]['type']['name'])
+        
+    pokemon_detail['ability_list'] = []
+    for el in range(0, len(data['abilities'])):
+        pokemon_detail['ability_list'].append(data['abilities'][el]['ability']['name'])
+
+    pokemon_detail['pok_stats'] = {}
+    for i, k in enumerate(data['stats']):
+        name = data['stats'][i]['stat']['name']
+        stat = data['stats'][i]['base_stat']
+        pokemon_detail['pok_stats'][name] = stat
+        
     return pokemon_detail
 
 
@@ -94,8 +108,8 @@ class PokemonList(LoginRequiredMixin, ListView):
         context['detail'] = self.detail
         # print(self.request.session['offset'])
         return context
-
-
+    
+    
 class PokemonDetail(LoginRequiredMixin, View):
     def setup(self, request, *args, **kwargs):
         if hasattr(self, 'get') and not hasattr(self, 'head'):
@@ -113,4 +127,5 @@ class PokemonDetail(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {}
         context['pokemon'] = self.pokemon_detail
+        # print(context['pokemon']['types'])
         return render(request, 'pokemon/detail.html', context)

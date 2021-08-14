@@ -24,6 +24,10 @@
                 padding-bottom: 15px;
                 border-radius: 0;
             }
+            .txt_center {
+                text-align: center;
+                font-size: x-large;
+            }
         </style>
     </head>
     <body>
@@ -47,7 +51,7 @@
             </nav>
         {% endif %}
         <div id="content">
-            <h3>Welcome to The Pokemon World</h3>
+            <p class="txt_center">Welcome to The Pokemon World</p>
             {% block content %}{% endblock %}
         </div>
     </body>

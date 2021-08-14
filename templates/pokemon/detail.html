@@ -1,10 +1,74 @@
 {% extends 'main.html' %}
 
 {% block content %}
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 15px;
+    }
+    table {
+        border-spacing: 5px;
+        width: 100%;
+    }
+    .txt_center {
+        text-align: center;
+        font-size: x-large;
+    }
+</style>
 
-    <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}">
-    <h1>Name: {{ pokemon.name }}</h1>
+<h2 class="txt_center">{{ pokemon.name|title }}</h2>
 
-    <p><strong>ID:</strong> {{ pokemon.id }}</p>
-    <p><strong>Weight:</strong> {{ pokemon.weight }}</p>
+<table>
+    <caption>{{ pokemon.name }} base details</caption>
+    <tr>
+        <th>Sprite</th>
+        <td>
+            <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}">
+        </td>
+    </tr>
+    <tr>
+        <th>Name</th>
+        <td>{{ pokemon.name }}</td>
+    </tr>
+    <tr>
+        <th>ID</th>
+        <td>{{ pokemon.id }}</td>
+    </tr>
+    <tr>
+        <th>Type</th>
+        <td>{{ pokemon.type_list|join:", " }}</td>
+    </tr>
+    <tr>
+        <th>Height</th>
+        <td>{{ pokemon.height }}</td>
+    </tr>
+    <tr>
+        <th>Weight</th>
+        <td>{{ pokemon.weight }}</td>
+    </tr>
+    <tr>
+        <th>Abilities</th>
+        <td>{{ pokemon.ability_list|join:", " }}</td>
+    </tr>
+</table>
+<br>
+<table>
+    <caption>{{ pokemon.name }} stats</caption>
+    <tr>
+        <th colspan="2" class="txt_center">Stats</th>
+    </tr>
+    <tr>
+        <th>Name</th>
+        <th>Base stat</th>
+    </tr>
+    {% for name, stat in pokemon.pok_stats.items %}
+        <tr>
+            <td>{{ name }}</td>
+            <td>{{ stat }}</td>
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}
