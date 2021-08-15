@@ -17,6 +17,12 @@
         text-align: center;
         font-size: x-large;
     }
+    a.disabled {
+        pointer-events: none;
+        cursor: default;
+        color: green;
+        text-decoration: none;
+    }
 </style>
 
 <h2 class="txt_center">{{ pokemon.name|title }}</h2>
@@ -71,4 +77,33 @@
         </tr>
     {% endfor %}
 </table>
+
+    <h1>Evolutions</h1>
+{% if evolutions %}
+    <ul>
+        <li>Unevolved: 
+            <a href="{% url 'pokemon:detail' pk=evolutions.base.p_id %}" {% ifequal evolutions.base.name pokemon.name %}class="disabled"{% endifequal %}>{{ evolutions.base.name|title }}</a>
+        </li>
+    {% if evolutions.first %}
+        <ul>
+        {% for evo1 in evolutions.first %}
+        <li>First level evolution: 
+            <a href="{% url 'pokemon:detail' pk=evo1.p_id %}" class="{% ifequal evo1.name pokemon.name %}disabled{% endifequal %}">{{ evo1.name|title }}</a>
+        </li>
+            {% if evolutions.second %}
+            <ul>
+                {% for evo2 in evolutions.second %}
+                    <li>Second level evolution: 
+                        <a href="{% url 'pokemon:detail' pk=evo2.p_id %}" class="{% ifequal evo2.name pokemon.name %}disabled{% endifequal %}">{{ evo2.name|title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </ul>
+{% else %}
+    <br><p>Pokemon without evolutions</p>
+{% endif %}
 {% endblock %}
