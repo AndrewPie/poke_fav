@@ -76,30 +76,32 @@ def pokemon_detail(data):
 def evolution_chain(p_id):
     evolutions = {}
     
-    pok_species = requests.get(f'https://pokeapi.co/api/v2/pokemon-species/{p_id}').json()
+    response = requests.get(f'https://pokeapi.co/api/v2/pokemon-species/{p_id}')
     
-    evo_chain = requests.get(pok_species['evolution_chain']['url']).json()
-    
-    if evo_chain['chain']['evolves_to']:
-        evolutions['base'] = {
-            'p_id': evo_chain['chain']['species']['url'].split('/')[-2],
-            'name': evo_chain['chain']['species']['name']
-        }
-        evolutions['first'] = []
-        for el in evo_chain['chain']['evolves_to']:
-            evolutions['first'].append({
-            'p_id': el['species']['url'].split('/')[-2],
-            'name': el['species']['name']
-            })
-            if el['evolves_to']:
-                evolutions['second'] = []
-                for el2 in el['evolves_to']:
-                    evolutions['second'].append({
-                        'p_id': el2['species']['url'].split('/')[-2],
-                        'name': el2['species']['name'],
-                        'first_id': el['species']['url'].split('/')[-2]
-                    })
-        return evolutions
+    if response.ok:
+        pok_species = response.json()
+        evo_chain = requests.get(pok_species['evolution_chain']['url']).json()
+        
+        if evo_chain['chain']['evolves_to']:
+            evolutions['base'] = {
+                'p_id': evo_chain['chain']['species']['url'].split('/')[-2],
+                'name': evo_chain['chain']['species']['name']
+            }
+            evolutions['first'] = []
+            for el in evo_chain['chain']['evolves_to']:
+                evolutions['first'].append({
+                'p_id': el['species']['url'].split('/')[-2],
+                'name': el['species']['name']
+                })
+                if el['evolves_to']:
+                    evolutions['second'] = []
+                    for el2 in el['evolves_to']:
+                        evolutions['second'].append({
+                            'p_id': el2['species']['url'].split('/')[-2],
+                            'name': el2['species']['name'],
+                            'first_id': el['species']['url'].split('/')[-2]
+                        })
+            return evolutions
     
 
 class PokemonList(LoginRequiredMixin, ListView):
@@ -136,29 +138,14 @@ class PokemonList(LoginRequiredMixin, ListView):
         context['pokemon'] = self.data
         context['detail'] = self.detail
         return context
-    
-    
-    
-    
-    
-    
+
     
 class PokemonDetail(LoginRequiredMixin, View):
-    def setup(self, request, *args, **kwargs):
-        if hasattr(self, 'get') and not hasattr(self, 'head'):
-            self.head = self.get
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
-
-        self.p_id = self.kwargs['pk']
-        self.data = call_poke_api(self, request, self.p_id)
-        self.pokemon_detail = pokemon_detail(self.data)
-        self.evolution_chain = evolution_chain(self.p_id)
-        super().setup
-        
     def get(self, request, *args, **kwargs):
+        p_id = self.kwargs['pk']
+        data = call_poke_api(self, request, p_id)
+        
         context = {}
-        context['pokemon'] = self.pokemon_detail
-        context['evolutions'] = self.evolution_chain
+        context['pokemon'] = pokemon_detail(data)
+        context['evolutions'] = evolution_chain(p_id)
         return render(request, 'pokemon/detail.html', context)
