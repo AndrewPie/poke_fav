@@ -17,15 +17,39 @@
         text-align: center;
         font-size: x-large;
     }
+    .center {
+        margin: auto;
+        width: 50%;
+    }
     a.disabled {
         pointer-events: none;
         cursor: default;
         color: green;
         text-decoration: none;
     }
+    .inline {
+        display: inline-block;
+    }
+    .checked {
+        color: orange;
+    }
 </style>
 
-<h2 class="txt_center">{{ pokemon.name|title }}</h2>
+<div class="center">
+    <h2 class="txt_center inline">{{ pokemon.name|title }}</h2>
+    <form action="{% url 'pokemon:favourite' pk=pokemon.id %}" method="POST" class="inline">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit"><i class="fa fa-star checked">Favorite</i></button>
+    </form>
+    <form action="{% url 'pokemon:unfavourite' pk=pokemon.id %}" method="POST" class="inline">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit"><i class="fa fa-star">Unfavorite</i></button>
+    </form>
+</div>
+
+
 
 <table>
     <caption>{{ pokemon.name }} base details</caption>

@@ -3,11 +3,12 @@ import json
 import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
-from django.views.generic import ListView
+from django.urls import reverse, reverse_lazy
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import ListView, CreateView, DeleteView
 from django.views import View
 
-from pokemon.models import Pokemon
+from pokemon.models import Pokemon, User
 
 
 def call_poke_api(self, request, p_id: int = None):
@@ -51,8 +52,10 @@ def detail_list(data):
     return detail
 
 
-def pokemon_detail(data):
+def pokemon_detail(self, data):
     pokemon_detail = data
+    
+    self.request.session['pok_name'] = data['name']
     
     pokemon_detail['image'] = data['sprites']['front_default']
     
@@ -106,7 +109,7 @@ def evolution_chain(p_id):
 
 class PokemonList(LoginRequiredMixin, ListView):
     model = Pokemon
-    template_name = "pokemon/list.html"
+    template_name = 'pokemon/list.html'
     
     def setup(self, request, *args, **kwargs):
         if hasattr(self, 'get') and not hasattr(self, 'head'):
@@ -146,6 +149,31 @@ class PokemonDetail(LoginRequiredMixin, View):
         data = call_poke_api(self, request, p_id)
         
         context = {}
-        context['pokemon'] = pokemon_detail(data)
+        context['pokemon'] = pokemon_detail(self, data)
         context['evolutions'] = evolution_chain(p_id)
         return render(request, 'pokemon/detail.html', context)
+    
+    
+    
+class Favourite(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        if Pokemon.objects.filter(p_id = pk).exists():
+            pokemon = get_object_or_404(Pokemon, p_id = pk)
+            pokemon.favourite.add(self.request.user)
+        else:
+            name = self.request.session['pok_name']
+            p_id = pk
+            pokemon = Pokemon.objects.create(name=name, p_id=p_id)
+            pokemon.favourite.add(self.request.user)
+        return redirect('pokemon:detail', pk = pk)
+
+
+class Unfavourite(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        if Pokemon.objects.filter(p_id = pk).exists():
+            pokemon = get_object_or_404(Pokemon, p_id = pk)
+            current_user = self.request.user
+            user = get_object_or_404(User, id = current_user.id)
+            pokemon.favourite.remove(user)
+
+        return redirect('pokemon:detail', pk = pk)
