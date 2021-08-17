@@ -35,7 +35,7 @@
         {% for pokemon in pokemon.results %}
         <tr>
             <td>{{ detail.id|index:forloop.counter0 }}</td>
-            <td>{{ pokemon.name }}</td>
+            <td>{{ pokemon.name|title }}</td>
             <td>
                 {% for type in detail.types|index:forloop.counter0 %}
                     {% if forloop.last %}
