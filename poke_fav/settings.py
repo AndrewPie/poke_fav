@@ -23,6 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-n8#2y7$metkk7(z5g%#^2z53!4w%iyeub!255a4i6ztkd7-801'
+
 ALLOWED_HOSTS = []
 
 
@@ -126,14 +129,6 @@ LOGOUT_REDIRECT_URL = "users:login"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 3000
 SESSION_SAVE_EVERY_REQUEST = True   
-
-
-try:
-    from poke_fav.local_settings import SECRET_KEY
-except ModuleNotFoundError:
-    print('Missing SECRET_KEY in local_settings.py!')
-    print("Fill in the data and try again!")
-    exit(0)
 
 try:
     from poke_fav.local_settings import DATABASES
