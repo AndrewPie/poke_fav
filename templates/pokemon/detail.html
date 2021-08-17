@@ -37,16 +37,19 @@
 
 <div class="center">
     <h2 class="txt_center inline">{{ pokemon.name|title }}</h2>
-    <form action="{% url 'pokemon:favourite' pk=pokemon.id %}" method="POST" class="inline">
-        {% csrf_token %}
-        {{ form }}
-        <button type="submit"><i class="fa fa-star checked">Favorite</i></button>
-    </form>
-    <form action="{% url 'pokemon:unfavourite' pk=pokemon.id %}" method="POST" class="inline">
-        {% csrf_token %}
-        {{ form }}
-        <button type="submit"><i class="fa fa-star">Unfavorite</i></button>
-    </form>
+    {% if is_fav %}
+        <form action="{% url 'pokemon:unfavourite' pk=pokemon.id %}" method="POST" class="inline">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit"><i class="fa fa-star">Remove from favourites</i></button>
+        </form>
+    {% else %}
+        <form action="{% url 'pokemon:favourite' pk=pokemon.id %}" method="POST" class="inline">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit"><i class="fa fa-star checked">Add to favourites</i></button>
+        </form>
+    {% endif %}
 </div>
 
 

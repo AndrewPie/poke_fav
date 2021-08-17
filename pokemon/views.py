@@ -105,7 +105,24 @@ def evolution_chain(p_id):
                             'first_id': el['species']['url'].split('/')[-2]
                         })
             return evolutions
+
+
+def check_if_fav(self, p_id):
+    current_user = self.request.user
+    fav = None
+    try:
+        pokemon = Pokemon.objects.get(p_id=p_id)
+    except Pokemon.DoesNotExist:
+        pokemon = None
     
+    if pokemon:
+        pok_db_id = getattr(pokemon, 'id')
+        try:
+            fav =  User.objects.get(id = current_user.id, favourites__id=pok_db_id)
+        except User.DoesNotExist:
+            pass
+    return fav
+
 
 class PokemonList(LoginRequiredMixin, ListView):
     model = Pokemon
@@ -141,7 +158,7 @@ class PokemonList(LoginRequiredMixin, ListView):
         context['pokemon'] = self.data
         context['detail'] = self.detail
         return context
-
+    
     
 class PokemonDetail(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
@@ -151,10 +168,10 @@ class PokemonDetail(LoginRequiredMixin, View):
         context = {}
         context['pokemon'] = pokemon_detail(self, data)
         context['evolutions'] = evolution_chain(p_id)
+        context['is_fav'] = check_if_fav(self, p_id)
         return render(request, 'pokemon/detail.html', context)
     
-    
-    
+
 class Favourite(LoginRequiredMixin, View):
     def post(self, request, pk):
         if Pokemon.objects.filter(p_id = pk).exists():
