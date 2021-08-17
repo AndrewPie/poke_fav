@@ -34,23 +34,23 @@
 {% endif %}
 
 {% if is_paginated %}
-    <ul class="pagination">
+    <ul class="pagination justify-content-center flex-wrap mt-2 mb-4">
         {% if page_obj.has_previous %}
-            <li><button><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></button></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
         {% else %}
-            <li class="disabled"><button><span>&laquo;</span></button></li>
+            <li class="disabled page-item"><span>&laquo;</span></li>
         {% endif %}
         {% for i in paginator.page_range %}
             {% if page_obj.number == i %}
-                <li class="active"><button><span>{{ i }} <span class="sr-only">(current)</span></span></button></li>
+                <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
             {% else %}
-                <li><button><a href="?page={{ i }}">{{ i }}</a></button></li>
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
             {% endif %}
         {% endfor %}
         {% if page_obj.has_next %}
-            <li><button><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></button></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
         {% else %}
-            <li class="disabled"><button><span>&raquo;</span></button></li>
+            <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
         {% endif %}
     </ul>
 {% endif %}
