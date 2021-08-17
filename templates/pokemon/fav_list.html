@@ -26,10 +26,32 @@
         </tr>
         {% for pokemon in fav_list %}
         <tr>
-            <td>{{ pokemon.name }}</td>
+            <td>{{ pokemon.name|title }}</td>
             <td><a href="{% url 'pokemon:detail' pk=pokemon.p_id %}">Details</a></td>
         </tr>
         {% endfor %}
     </table>
+{% endif %}
+
+{% if is_paginated %}
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li><button><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></button></li>
+        {% else %}
+            <li class="disabled"><button><span>&laquo;</span></button></li>
+        {% endif %}
+        {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+                <li class="active"><button><span>{{ i }} <span class="sr-only">(current)</span></span></button></li>
+            {% else %}
+                <li><button><a href="?page={{ i }}">{{ i }}</a></button></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li><button><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></button></li>
+        {% else %}
+            <li class="disabled"><button><span>&raquo;</span></button></li>
+        {% endif %}
+    </ul>
 {% endif %}
 {% endblock %}

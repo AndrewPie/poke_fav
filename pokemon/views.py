@@ -6,6 +6,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, CreateView, DeleteView
+from django.core.paginator import Paginator
 from django.views import View
 
 from pokemon.models import Pokemon, User
@@ -200,6 +201,7 @@ class FavouritesList(LoginRequiredMixin, ListView):
     template_name = 'pokemon/fav_list.html'
     ordering = ['name']
     context_object_name = 'fav_list'
+    paginate_by = 10
     
     def get_queryset(self):
         queryset = super().get_queryset()
