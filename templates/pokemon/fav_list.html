@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+
+{% block content %}
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 15px;
+    }
+    table {
+        border-spacing: 5px;
+        width: 100%;
+    }
+</style>
+
+<h3>Your favourites:</h3>
+{% if not fav_list %}
+    <p>You don't have any favourite pokemon</p>
+{% else %}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Details</th>
+        </tr>
+        {% for pokemon in fav_list %}
+        <tr>
+            <td>{{ pokemon.name }}</td>
+            <td><a href="{% url 'pokemon:detail' pk=pokemon.p_id %}">Details</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+{% endblock %}

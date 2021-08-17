@@ -192,5 +192,16 @@ class Unfavourite(LoginRequiredMixin, View):
             current_user = self.request.user
             user = get_object_or_404(User, id = current_user.id)
             pokemon.favourite.remove(user)
-
         return redirect('pokemon:detail', pk = pk)
+
+
+class FavouritesList(LoginRequiredMixin, ListView):
+    model = Pokemon
+    template_name = 'pokemon/fav_list.html'
+    ordering = ['name']
+    context_object_name = 'fav_list'
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        current_user = self.request.user
+        return queryset.filter(favourite = current_user)
