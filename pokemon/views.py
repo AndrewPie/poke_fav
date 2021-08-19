@@ -120,11 +120,10 @@ class PokemonList(LoginRequiredMixin, ListView):
         self.queryset = self.data['results']
         super().setup
 
-
     def get_queryset(self):
         queryset = self.queryset
         return queryset
-
+    
 
 class PokemonDetail(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
