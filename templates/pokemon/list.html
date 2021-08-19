@@ -17,13 +17,6 @@
 </style>
 
 
-{% if pokemon.previous %}
-            <form action="" method="post">
-                {% csrf_token %}
-                <button type="submit" value="first" name="first">First</button> 
-                <button type="submit" value="previous" name="previous">Previous 10</button> 
-            </form>
-        {% endif %}
     <table>
         <caption>List of Pokemon</caption>
         <tr>
@@ -32,12 +25,12 @@
             <th>Types</th>
             <th>Details</th>
         </tr>
-        {% for pokemon in pokemon.results %}
+        {% for pokemon in pokemons %}
         <tr>
-            <td>{{ detail.id|index:forloop.counter0 }}</td>
+            <td>{{ pokemon.url|pokemon_id }}</td>
             <td>{{ pokemon.name|title }}</td>
             <td>
-                {% for type in detail.types|index:forloop.counter0 %}
+                    {% for type in pokemon.url|types %}
                     {% if forloop.last %}
                         {{ type }}
                     {% else %}
@@ -45,16 +38,31 @@
                     {% endif %}
                 {% endfor %}
             </td>
-            <td><a href="{% url 'pokemon:detail' pk=detail.id|index:forloop.counter0 %}">More details</a></td>
-        </tr>
+            <td><a href="{% url 'pokemon:detail' pk=pokemon.url|pokemon_id %}">More details</a></td>
         {% endfor %}
         
     </table>
-    {% if pokemon.next %}
-        <form action="" method="post">
-            {% csrf_token %}
-            <button type="submit" value="next" name="next">Next 10</button> 
-            <button type="submit" value="last" name="last">Last</button> 
-        </form>
+
+
+    {% if is_paginated %}
+    <ul class="pagination justify-content-center flex-wrap mt-2 mb-4">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+            <li class="disabled page-item"><span class="page-link">&laquo;</span></li>
         {% endif %}
+        {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+                <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+        {% else %}
+            <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
+        {% endif %}
+    </ul>
+{% endif %}
 {% endblock %}

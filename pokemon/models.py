@@ -6,5 +6,8 @@ class Pokemon(models.Model):
     p_id = models.IntegerField(unique=True)
     favourite = models.ManyToManyField(User, related_name='favourites', blank=True)
     
+    class Meta:
+        ordering = ['p_id']
+    
     def __str__(self):
         return f'{self.p_id} - {self.name}'
