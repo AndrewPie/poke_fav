@@ -124,6 +124,18 @@ class PokemonList(LoginRequiredMixin, ListView):
         queryset = self.queryset
         return queryset
     
+    def get(self, request, *args, **kwargs):
+        page_number = request.GET.get('page', 1)
+        self.request.session['page_number'] = page_number
+        return super().get(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        paginator = Paginator(self.queryset, 10)
+        page_range = paginator.get_elided_page_range(number=self.request.session['page_number'], on_each_side=2)
+        context['page_range'] = page_range
+        return context
+
 
 class PokemonDetail(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):

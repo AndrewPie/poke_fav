@@ -36,7 +36,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item"></li>
-                            <a class="nav-link" href="{% url 'pokemon:list' %}">Strona główna</a>
+                            <a class="nav-link" href="{% if request.session.page_number %}{% url 'pokemon:list'%}?page={{ request.session.page_number }}{% else %}{% url 'pokemon:list' %}{% endif %}">Strona główna</a>
                         </li>
                         <li class="nav-item"></li>
                             <a class="nav-link" href="{% url 'pokemon:fav' %}">Ulubione</a>
