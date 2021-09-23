@@ -25,6 +25,10 @@
         pointer-events: none;
     }
 
+    .unchecked {
+        color: black;
+    }
+
     .icon-wrapper {
         display: flex;
         flex-direction: column;
@@ -48,10 +52,10 @@
             <div class="container">
                 ID
                 <div class="icon-wrapper">
-                    <a href="{% url 'pokemon:sort' key='id' order='ascending'%}" id="id_ascending" class="checked"><i
+                    <a href="{% url 'pokemon:sort' key='id' order='ascending'%}" id="id_ascending" class="unchecked"><i
                             class="fa fa-sort-up fa-2x"></i></a>
-                    <a href="{% url 'pokemon:sort' key='id' order='descending'%}" id="id_descending"><i
-                            class="fa fa-sort-down fa-2x"></i></a>
+                    <a href="{% url 'pokemon:sort' key='id' order='descending'%}" id="id_descending"
+                        class="unchecked"><i class="fa fa-sort-down fa-2x"></i></a>
                 </div>
             </div>
         </th>
@@ -59,10 +63,10 @@
             <div class="container">
                 Names
                 <div class="icon-wrapper">
-                    <a href="{% url 'pokemon:sort' key='name' order='ascending'%}" id="name_ascending"><i
-                            class="fa fa-sort-up fa-2x"></i></a>
-                    <a href="{% url 'pokemon:sort' key='name' order='descending'%}" id="name_descending"><i
-                            class="fa fa-sort-down fa-2x"></i></a>
+                    <a href="{% url 'pokemon:sort' key='name' order='ascending'%}" id="name_ascending"
+                        class="unchecked"><i class="fa fa-sort-up fa-2x"></i></a>
+                    <a href="{% url 'pokemon:sort' key='name' order='descending'%}" id="name_descending"
+                        class="unchecked"><i class="fa fa-sort-down fa-2x"></i></a>
                 </div>
             </div>
         </th>
@@ -115,15 +119,15 @@
 {% endif %}
 
 <script type="text/javascript">
-    window.onload = function changeClass(newColor) {
+    window.onload = function changeClass() {
         var elems = document.querySelectorAll(".checked");
-
         [].forEach.call(elems, function (el) {
-            el.classList.remove("checked");
+            if (el.id = "{{ sort_method }}") {
+                return;
+            }
+            el.className = "unchecked";
         });
-
-        var sort = "{{ sort_method }}";
-        document.getElementById(sort).className = "checked";
+        document.getElementById("{{ sort_method }}").className = "checked";
     }
 </script>
 
