@@ -3,70 +3,128 @@
 
 {% block content %}
 <style>
-    table, th, td {
+    table,
+    th,
+    td {
         border: 1px solid black;
         border-collapse: collapse;
     }
-    th, td {
+
+    th,
+    td {
         padding: 15px;
     }
+
     table {
         border-spacing: 5px;
         width: 100%;
     }
+
+    .checked {
+        color: orange;
+        pointer-events: none;
+    }
+
+    .icon-wrapper {
+        display: flex;
+        flex-direction: column;
+        padding-left: 4px;
+    }
+
+    .icon-wrapper i.fa {
+        line-height: 0;
+    }
+
+    .container {
+        display: flex;
+        align-items: center;
+    }
 </style>
 
-
-    <table>
-        <caption>List of Pokemon</caption>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Types</th>
-            <th>Details</th>
-        </tr>
-        {% for pokemon in pokemons %}
-        <tr>
-            <td>{{ pokemon.url|pokemon_id }}</td>
-            <td>{{ pokemon.name|title }}</td>
-            <td>
-                    {% for type in pokemon.url|types %}
-                    {% if forloop.last %}
-                        {{ type }}
-                    {% else %}
-                        {{ type }},
-                    {% endif %}
-                {% endfor %}
-            </td>
-            <td><a href="{% url 'pokemon:detail' pk=pokemon.url|pokemon_id %}">More details</a></td>
-        {% endfor %}
-        
-    </table>
-
-    {% if is_paginated %}
-    <ul class="pagination justify-content-center flex-wrap mt-2 mb-4">
-        {% if page_obj.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-        {% else %}
-            <li class="disabled page-item"><span class="page-link">&laquo;</span></li>
-        {% endif %}
-        {% for i in page_range|default_if_none:page_obj.paginator.get_elided_page_range %}
-        {% if page_obj.number == i %}
-            <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span>
-            </li>
-        {% else %}
-            {% if i == page_obj.paginator.ELLIPSIS %}
-                <li class="page-item"><span class="page-link">{{ i }}</span></li>
+<table>
+    <caption>List of Pokemon</caption>
+    <tr>
+        <th>
+            <div class="container">
+                ID
+                <div class="icon-wrapper">
+                    <a href="{% url 'pokemon:sort' key='id' order='ascending'%}" id="id_ascending" class="checked"><i
+                            class="fa fa-sort-up fa-2x"></i></a>
+                    <a href="{% url 'pokemon:sort' key='id' order='descending'%}" id="id_descending"><i
+                            class="fa fa-sort-down fa-2x"></i></a>
+                </div>
+            </div>
+        </th>
+        <th>
+            <div class="container">
+                Names
+                <div class="icon-wrapper">
+                    <a href="{% url 'pokemon:sort' key='name' order='ascending'%}" id="name_ascending"><i
+                            class="fa fa-sort-up fa-2x"></i></a>
+                    <a href="{% url 'pokemon:sort' key='name' order='descending'%}" id="name_descending"><i
+                            class="fa fa-sort-down fa-2x"></i></a>
+                </div>
+            </div>
+        </th>
+        <th>Types</th>
+        <th>Details</th>
+    </tr>
+    {% for pokemon in pokemons %}
+    <tr>
+        <td>{{ pokemon.url|pokemon_id }}</td>
+        <td>{{ pokemon.name|title }}</td>
+        <td>
+            {% for type in pokemon.url|types %}
+            {% if forloop.last %}
+            {{ type }}
             {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {{ type }},
             {% endif %}
-        {% endif %}
+            {% endfor %}
+        </td>
+        <td><a href="{% url 'pokemon:detail' pk=pokemon.url|pokemon_id %}">More details</a></td>
+        {% endfor %}
+
+</table>
+
+{% if is_paginated %}
+<ul class="pagination justify-content-center flex-wrap mt-2 mb-4">
+    {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+    <li class="disabled page-item"><span class="page-link">&laquo;</span></li>
+    {% endif %}
+    {% for i in page_range|default_if_none:page_obj.paginator.get_elided_page_range %}
+    {% if page_obj.number == i %}
+    <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span>
+    </li>
+    {% else %}
+    {% if i == page_obj.paginator.ELLIPSIS %}
+    <li class="page-item"><span class="page-link">{{ i }}</span></li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+    {% endif %}
+    {% endif %}
     {% endfor %}
-        {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-        {% else %}
-            <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
-        {% endif %}
-    </ul>
+    {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+    <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
+    {% endif %}
+</ul>
 {% endif %}
+
+<script type="text/javascript">
+    window.onload = function changeClass(newColor) {
+        var elems = document.querySelectorAll(".checked");
+
+        [].forEach.call(elems, function (el) {
+            el.classList.remove("checked");
+        });
+
+        var sort = "{{ sort_method }}";
+        document.getElementById(sort).className = "checked";
+    }
+</script>
+
 {% endblock %}

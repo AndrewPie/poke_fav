@@ -1,58 +1,67 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <style>
-            body { 
-                padding-top: 85px; 
-                margin: auto;
-                width: 50%
-            }
-            .navbar {
-                padding-top: 0;
-                padding-bottom: 0;
-            }
-    
-            .nav-item {
-                padding-top: 15px;
-                padding-bottom: 15px;
-                border-radius: 0;
-            }
-            .txt_center {
-                text-align: center;
-                font-size: x-large;
-            }
-        </style>
-    </head>
-    <body>
-        {% if request.user.is_authenticated %}
-            <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item"></li>
-                            <a class="nav-link" href="{% if request.session.page_number %}{% url 'pokemon:list' %}?page={{ request.session.page_number }}{% else %}{% url 'pokemon:list' %}{% endif %}">Strona główna</a>
-                        </li>
-                        <li class="nav-item"></li>
-                            <a class="nav-link" href="{% url 'pokemon:fav' %}">Ulubione</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:logout'%}">Wyloguj</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        {% endif %}
-        <div id="content">
-            <p class="txt_center">Welcome to The Pokemon World</p>
-            {% block content %}{% endblock %}
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
+        rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            padding-top: 85px;
+            margin: auto;
+            width: 50%
+        }
+
+        .navbar {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .nav-item {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            border-radius: 0;
+        }
+
+        .txt_center {
+            text-align: center;
+            font-size: x-large;
+        }
+    </style>
+</head>
+
+<body>
+    {% if request.user.is_authenticated %}
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"></li>
+                <a class="nav-link"
+                    href="{% if request.session.page_number %}{% url 'pokemon:list' %}?page={{ request.session.page_number }}{% else %}{% url 'pokemon:list' %}{% endif %}">Strona
+                    główna</a>
+                </li>
+                <li class="nav-item"></li>
+                <a class="nav-link" href="{% url 'pokemon:fav' %}">Ulubione</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:logout'%}">Wyloguj</a>
+                </li>
+            </ul>
         </div>
-    </body>
+    </nav>
+    {% endif %}
+    <div id="content">
+        <p class="txt_center">Welcome to The Pokemon World</p>
+        {% block content %}{% endblock %}
+    </div>
+</body>
+
 </html>
