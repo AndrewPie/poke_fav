@@ -24,6 +24,8 @@ def call_poke_api(self, request, p_info=None):
                 "https://pokeapi.co/api/v2/pokemon/", params=payload
             )
         else:
+            if isinstance(p_info, str):
+                p_info = p_info.lower()
             response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{p_info}")
     except requests.exceptions.RequestException as e:
         raise Http404(e)
