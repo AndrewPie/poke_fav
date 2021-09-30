@@ -2,13 +2,18 @@
 
 {% block content %}
 <style>
-    table, th, td {
+    table,
+    th,
+    td {
         border: 1px solid black;
         border-collapse: collapse;
     }
-    th, td {
+
+    th,
+    td {
         padding: 15px;
     }
+
     table {
         border-spacing: 5px;
         width: 100%;
@@ -17,41 +22,41 @@
 
 <h3>Your favourites:</h3>
 {% if not fav_list %}
-    <p>You don't have any favourite pokemon</p>
+<p>You don't have any favourite pokemon</p>
 {% else %}
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Details</th>
-        </tr>
-        {% for pokemon in fav_list %}
-        <tr>
-            <td>{{ pokemon.name|title }}</td>
-            <td><a href="{% url 'pokemon:detail' pk=pokemon.p_id %}">Details</a></td>
-        </tr>
-        {% endfor %}
-    </table>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Details</th>
+    </tr>
+    {% for pokemon in fav_list %}
+    <tr>
+        <td>{{ pokemon.name|title }}</td>
+        <td><a href="{% url 'pokemon:detail' p_info=pokemon.p_id %}">Details</a></td>
+    </tr>
+    {% endfor %}
+</table>
 {% endif %}
 
 {% if is_paginated %}
-    <ul class="pagination justify-content-center flex-wrap mt-2 mb-4">
-        {% if page_obj.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-        {% else %}
-            <li class="disabled page-item"><span class="page-link">&laquo;</span></li>
-        {% endif %}
-        {% for i in paginator.page_range %}
-            {% if page_obj.number == i %}
-                <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
-            {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-            {% endif %}
-        {% endfor %}
-        {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-        {% else %}
-            <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
-        {% endif %}
-    </ul>
+<ul class="pagination justify-content-center flex-wrap mt-2 mb-4">
+    {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+    <li class="disabled page-item"><span class="page-link">&laquo;</span></li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+    {% if page_obj.number == i %}
+    <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+    {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+    <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
+    {% endif %}
+</ul>
 {% endif %}
 {% endblock %}

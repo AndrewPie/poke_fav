@@ -12,9 +12,9 @@ from django.views import View
 from pokemon.models import Pokemon, User
 
 
-def call_poke_api(self, request, p_id: int = None):
+def call_poke_api(self, request, p_info=None):
     try:
-        if p_id is None:
+        if p_info is None:
             response_limit = requests.get("https://pokeapi.co/api/v2/pokemon/").json()
             limit = response_limit["count"]
 
@@ -24,7 +24,7 @@ def call_poke_api(self, request, p_id: int = None):
                 "https://pokeapi.co/api/v2/pokemon/", params=payload
             )
         else:
-            response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{p_id}")
+            response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{p_info}")
     except requests.exceptions.RequestException as e:
         raise Http404(e)
 
@@ -55,10 +55,10 @@ def pokemon_detail(self, data):
     return pokemon_detail
 
 
-def evolution_chain(p_id):
+def evolution_chain(p_info):
     evolutions = {}
 
-    response = requests.get(f"https://pokeapi.co/api/v2/pokemon-species/{p_id}")
+    response = requests.get(f"https://pokeapi.co/api/v2/pokemon-species/{p_info}")
 
     if response.ok:
         pok_species = response.json()
@@ -90,11 +90,14 @@ def evolution_chain(p_id):
             return evolutions
 
 
-def check_if_fav(self, p_id):
+def check_if_fav(self, p_info):
     current_user = self.request.user
     fav = None
     try:
-        pokemon = Pokemon.objects.get(p_id=p_id)
+        if isinstance(p_info, int):
+            pokemon = Pokemon.objects.get(p_id=p_info)
+        elif isinstance(p_info, str):
+            pokemon = Pokemon.objects.get(name=p_info)
     except Pokemon.DoesNotExist:
         pokemon = None
 
@@ -182,13 +185,14 @@ class PokemonSort(LoginRequiredMixin, View):
 
 class PokemonDetail(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        p_id = self.kwargs["pk"]
-        data = call_poke_api(self, request, p_id)
+        p_info = self.kwargs["p_info"]
+        # p_info = self.request.GET.get("p_info", None)
+        data = call_poke_api(self, request, p_info)
 
         context = {}
         context["pokemon"] = pokemon_detail(self, data)
-        context["evolutions"] = evolution_chain(p_id)
-        context["is_fav"] = check_if_fav(self, p_id)
+        context["evolutions"] = evolution_chain(p_info)
+        context["is_fav"] = check_if_fav(self, p_info)
         return render(request, "pokemon/detail.html", context)
 
 
@@ -202,7 +206,7 @@ class Favourite(LoginRequiredMixin, View):
             p_id = pk
             pokemon = Pokemon.objects.create(name=name, p_id=p_id)
             pokemon.favourite.add(self.request.user)
-        return redirect("pokemon:detail", pk=pk)
+        return redirect("pokemon:detail", p_info=pk)
 
 
 class Unfavourite(LoginRequiredMixin, View):
@@ -214,7 +218,7 @@ class Unfavourite(LoginRequiredMixin, View):
             pokemon.favourite.remove(user)
             # if not pokemon.favourite.all():
             #     pokemon.delete()
-        return redirect("pokemon:detail", pk=pk)
+        return redirect("pokemon:detail", p_info=pk)
 
 
 class FavouritesList(LoginRequiredMixin, ListView):

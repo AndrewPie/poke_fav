@@ -86,7 +86,7 @@
             {% endif %}
             {% endfor %}
         </td>
-        <td><a href="{% url 'pokemon:detail' pk=pokemon.url|pokemon_id %}">More details</a></td>
+        <td><a href="{% url 'pokemon:detail' p_info=pokemon.url|pokemon_id %}">More details</a></td>
         {% endfor %}
 
 </table>

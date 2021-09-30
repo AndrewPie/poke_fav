@@ -2,34 +2,44 @@
 
 {% block content %}
 <style>
-    table, th, td {
+    table,
+    th,
+    td {
         border: 1px solid black;
         border-collapse: collapse;
     }
-    th, td {
+
+    th,
+    td {
         padding: 15px;
     }
+
     table {
         border-spacing: 5px;
         width: 100%;
     }
+
     .txt_center {
         text-align: center;
         font-size: x-large;
     }
+
     .center {
         margin: auto;
         width: 50%;
     }
+
     a.disabled {
         pointer-events: none;
         cursor: default;
         color: green;
         text-decoration: none;
     }
+
     .inline {
         display: inline-block;
     }
+
     .checked {
         color: orange;
     }
@@ -38,17 +48,17 @@
 <div class="center">
     <h2 class="txt_center inline">{{ pokemon.name|title }}</h2>
     {% if is_fav %}
-        <form action="{% url 'pokemon:unfavourite' pk=pokemon.id %}" method="POST" class="inline">
-            {% csrf_token %}
-            {{ form }}
-            <button type="submit"><i class="fa fa-star">Remove from favourites</i></button>
-        </form>
+    <form action="{% url 'pokemon:unfavourite' pk=pokemon.id %}" method="POST" class="inline">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit"><i class="fa fa-star">Remove from favourites</i></button>
+    </form>
     {% else %}
-        <form action="{% url 'pokemon:favourite' pk=pokemon.id %}" method="POST" class="inline">
-            {% csrf_token %}
-            {{ form }}
-            <button type="submit"><i class="fa fa-star checked">Add to favourites</i></button>
-        </form>
+    <form action="{% url 'pokemon:favourite' pk=pokemon.id %}" method="POST" class="inline">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit"><i class="fa fa-star checked">Add to favourites</i></button>
+    </form>
     {% endif %}
 </div>
 
@@ -98,39 +108,44 @@
         <th>Base stat</th>
     </tr>
     {% for name, stat in pokemon.pok_stats.items %}
-        <tr>
-            <td>{{ name }}</td>
-            <td>{{ stat }}</td>
-        </tr>
+    <tr>
+        <td>{{ name }}</td>
+        <td>{{ stat }}</td>
+    </tr>
     {% endfor %}
 </table>
 
-    <h1>Evolutions</h1>
+<h1>Evolutions</h1>
 {% if evolutions %}
-    <ul>
-        <li>Unevolved: 
-            <a href="{% url 'pokemon:detail' pk=evolutions.base.p_id %}" {% ifequal evolutions.base.name pokemon.name %}class="disabled"{% endifequal %}>{{ evolutions.base.name|title }}</a>
-        </li>
+<h1>{{ evolutions.base.name }}</h1>
+<ul>
+    <li>Unevolved:
+        <a href="{% url 'pokemon:detail' p_info=evolutions.base.p_id %}"
+            class="{% if evolutions.base.name == pokemon.name %}disabled{% endif %}">{{evolutions.base.name|title}}</a>
+    </li>
     {% if evolutions.first %}
-        <ul>
+    <ul>
         {% for evo1 in evolutions.first %}
-        <li>First level evolution: 
-            <a href="{% url 'pokemon:detail' pk=evo1.p_id %}" class="{% ifequal evo1.name pokemon.name %}disabled{% endifequal %}">{{ evo1.name|title }}</a>
+        <li>First level evolution:
+            <a href="{% url 'pokemon:detail' p_info=evo1.p_id %}"
+                class="{% if evo1.name == pokemon.name %}disabled{% endif %}">{{ evo1.name|title }}</a>
         </li>
-            {% if evolutions.second %}
-            <ul>
-                {% for evo2 in evolutions.second %}
-                    <li>Second level evolution: 
-                        <a href="{% url 'pokemon:detail' pk=evo2.p_id %}" class="{% ifequal evo2.name pokemon.name %}disabled{% endifequal %}">{{ evo2.name|title }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        {% endfor %}
+        {% if evolutions.second %}
+        <ul>
+            {% for evo2 in evolutions.second %}
+            <li>Second level evolution:
+                <a href="{% url 'pokemon:detail' p_info=evo2.p_id %}"
+                    class="{% if evo2.name == pokemon.name %}disabled{% endif %}">{{ evo2.name|title }}</a>
+            </li>
+            {% endfor %}
         </ul>
-    {% endif %}
+        {% endif %}
+        {% endfor %}
     </ul>
+    {% endif %}
+</ul>
 {% else %}
-    <br><p>Pokemon without evolutions</p>
+<br>
+<p>Pokemon without evolutions</p>
 {% endif %}
 {% endblock %}
